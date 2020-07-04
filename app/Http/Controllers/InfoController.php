@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 use App\Token;
 
@@ -29,46 +30,37 @@ class InfoController extends Controller
     public function output()
     {
         $current_user_id = Auth::id();
-//        $current_user_info = Token::where('user_id', $current_user_id)->get();
         $current_user_info = Token::firstWhere('user_id', $current_user_id);
-        // curlの初期化
-        $ch = curl_init();
-        // 使用するURL
-        $json = 1;
-   //     while (empty(! $json)) {
-            $page = 1;
-            //$url = "https://qiita.com/api/v2/authenticated_user/items?page=1&per_page=100";
-            $url = "https://qiita.com/api/v2/authenticated_user/items?page={$page}&per_page=100";
-            $page = 1 + $page;
-            // curlのオプション設定
-            $options = [
-                CURLOPT_URL => $url,
-                CURLOPT_HTTPHEADER => array(
-                    // データの形式、文字コード記載
-                    'Content-Type: application/json; charser=UTF-8',
-                    // 自身のアクセストークン
-                    'Authorization: Bearer ' . $current_user_info['token'],
-                ),
-                // 返り値を文字列で取得
-                CURLOPT_RETURNTRANSFER => true,
-                // HTTPメソッド指定
-                CURLOPT_CUSTOMREQUEST => 'GET',
-            ];
-            // 複数のオプションを設定
-            curl_setopt_array($ch, $options);
-            // curlの実行
-            $json = NULL;
-            $json = curl_exec($ch);
-            // curlを閉じる
-            curl_close($ch);
-            // json文字列をデコード
-//            $decode_res = json_decode($json);
-    
-            $decode_res = [
-                json_decode($json),
-            ];
-     //   }
+        
+
+        $http_header = [
+            'Content-Type: application/json; charser=UTF-8',//https://www.php.net/manual/ja/function.curl-setopt.php
+            'Authorization: Bearer ' . "98c745aff6c68a9c115aa1406b509b4346ef66e0",
+        ];
+        
+        $curl = curl_init();
+        
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $http_header);
+
+        $page = 1;
+        $ii = 1;
+        $output = 0;
+
+        while ($output !== '[]' && $ii <= 100) {
+            curl_setopt($curl, CURLOPT_URL, "https://qiita.com/api/v2/authenticated_user/items?page={$page}&per_page=100");
+            $output = curl_exec($curl);
+            $decode_res[] = json_decode($output);
+            $page++;
+            $ii++;
+        }
+        Log::debug($ii);          
+
+        curl_close($curl);
 
         return view('infos.output', ['decode_res' => $decode_res]);
+        //情報→https://www.php.net/manual/ja/function.curl-setopt-array.php
+        //https://www.php.net/manual/ja/function.curl-setopt.php
+        //情報→https://www.php.net/manual/ja/function.curl-init.php
     }
 }
