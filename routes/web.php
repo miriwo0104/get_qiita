@@ -24,3 +24,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/info/input', 'InfoController@input')->name('info.input');
 Route::post('/info/get', 'InfoController@get')->name('info.get');
 Route::get('/info/output', 'InfoController@output')->name('info.output');
+Route::get('/info/output/markdown', 'InfoController@markdown_output')->name('info.markdown.output');
