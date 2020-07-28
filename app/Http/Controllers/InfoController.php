@@ -18,24 +18,22 @@ class InfoController extends Controller
 
     public function get(Request $request)
     {
-        $current_user_id = Auth::id();
-        $new_token = new Token();
-        $new_token->user_id = $current_user_id;
-        $new_token->token = $request['token'];
-        $new_token->save();
-
-        return redirect()->route('home');
+        $token = $request['token'];
+        $strings = [
+            'str' => $token,
+        ];
+        return redirect('/info/output')->withInput($strings);
     }
 
-    public function output()
+    public function output(Request $request)
     {
+        $token = $request->old('str');
         $current_user_id = Auth::id();
         $current_user_info = Token::firstWhere('user_id', $current_user_id);
-        
 
         $http_header = [
-            'Content-Type: application/json; charser=UTF-8',//https://www.php.net/manual/ja/function.curl-setopt.php
-            'Authorization: Bearer ' . "98c745aff6c68a9c115aa1406b509b4346ef66e0",
+            'Content-Type: application/json; charser=UTF-8',
+            'Authorization: Bearer ' . $token,
         ];
         
         $curl = curl_init();
@@ -62,5 +60,6 @@ class InfoController extends Controller
         //情報→https://www.php.net/manual/ja/function.curl-setopt-array.php
         //https://www.php.net/manual/ja/function.curl-setopt.php
         //情報→https://www.php.net/manual/ja/function.curl-init.php
+        //https://www.php.net/manual/ja/function.curl-setopt.php
     }
 }

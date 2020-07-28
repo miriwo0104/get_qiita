@@ -1,6 +1,6 @@
 <div class="main">
     <div class="title">
-        <h1>input</h1>
+        <h1>認証トークンを記入後、送信ボタンをクリックしてください</h1>
     </div>
     <div class="input">
         <form action="{{ route('info.get') }}" method="post">
