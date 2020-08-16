@@ -11,12 +11,12 @@
                     $datetime = date('Y-m-d H:i:s', $timestamp);
                 @endphp
                 <hr>
-                <br>
-                dateTime: {{ $datetime }}
-                <br>
-                title: {{ $res->title }}
-                <br>
-                url: {{ $res->url }}
+                <h5>日時</h5>
+                <p>{{ $datetime }}</p>
+                <h5>記事タイトル</h5>
+                <p>{{ $res->title }}</p>
+                <h5>リンク</h5>
+                <a href="{{ $res->url }}">{{ $res->url }}</a>
             @endforeach
         @endforeach
     </div>
