@@ -22,14 +22,12 @@ class InfoController extends Controller
         $strings = [
             'str' => $token,
         ];
-        return redirect('/info/output')->withInput($strings);
+        return redirect(route('info.output'))->withInput($strings);
     }
 
     public function output(Request $request)
     {
         $token = $request->old('str');
-        $current_user_id = Auth::id();
-        $current_user_info = Token::firstWhere('user_id', $current_user_id);
 
         $http_header = [
             'Content-Type: application/json; charser=UTF-8',
